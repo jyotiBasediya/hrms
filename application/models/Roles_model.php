@@ -1,0 +1,75 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class roles_model extends CI_Model {
+ 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+    }
+ 
+	public function get_user_roles()
+	{
+	  return $this->db->get("hrms_user_roles");
+	}
+	 public function get_user_rolesNotSuperAdmin()
+	{
+		$condition = "role_id !=" . "'18'";
+		$this->db->select('*');
+		$this->db->from('hrms_user_roles');
+		$this->db->where($condition);
+	  return $this->db->get();
+	  //return $query->result();
+	}
+	 public function read_role_information($id) {
+	
+		$condition = "role_id =" . "'" . $id . "'";
+		$this->db->select('*');
+		$this->db->from('hrms_user_roles');
+		$this->db->where($condition);
+		$this->db->limit(1);
+		$query = $this->db->get();
+		
+		if ($query->num_rows() == 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+	
+	
+	// Function to add record in table
+	public function add($data){
+		$this->db->insert('hrms_user_roles', $data);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	// Function to Delete selected record from table
+	public function delete_record($id){
+		$this->db->where('role_id', $id);
+		$this->db->delete('hrms_user_roles');
+		
+	}
+	
+	// Function to update record in table
+	public function update_record($data, $id){
+		$this->db->where('role_id', $id);
+		if( $this->db->update('hrms_user_roles',$data)) {
+			return true;
+		} else {
+			return false;
+		}		
+	}
+	
+	// get all user roles
+	public function all_user_roles()
+	{
+	  $query = $this->db->query("SELECT * from hrms_user_roles");
+  	  return $query->result();
+	}
+}
+?>
